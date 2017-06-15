@@ -461,7 +461,7 @@ nv.models.pie = function() {
             renderWatch.reset(duration);
         }},
         y: {get: function(){return getY;}, set: function(_){
-            getY=d3.functor(_);
+            getY=(function(x) { return function() { return x; } ; })(_);
         }},
         color: {get: function(){return color;}, set: function(_){
             color=nv.utils.getColor(_);

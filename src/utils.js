@@ -554,12 +554,12 @@ nv.utils.symbol = function() {
     }
     symbol.type = function(_) {
         if (!arguments.length) return type;
-        type = d3.functor(_);
+        type = (function(x) { return function() { return x; } ; })(_);
         return symbol;
     };
     symbol.size = function(_) {
         if (!arguments.length) return size;
-        size = d3.functor(_);
+        size = (function(x) { return function() { return x; } ; })(_);
         return symbol;
     };
     return symbol;

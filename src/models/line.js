@@ -206,7 +206,7 @@ nv.models.line = function() {
             scatter.duration(duration);
         }},
         isArea: {get: function(){return isArea;}, set: function(_){
-            isArea = d3.functor(_);
+            isArea = (function(x) { return function() { return x; } ; })(_);
         }},
         x: {get: function(){return getX;}, set: function(_){
             getX = _;

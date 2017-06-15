@@ -1434,12 +1434,12 @@ nv.utils.symbol = function() {
     }
     symbol.type = function(_) {
         if (!arguments.length) return type;
-        type = d3.functor(_);
+        type = (function(x) { return function() { return x; } ; })(_);
         return symbol;
     };
     symbol.size = function(_) {
         if (!arguments.length) return size;
-        size = d3.functor(_);
+        size = (function(x) { return function() { return x; } ; })(_);
         return symbol;
     };
     return symbol;
@@ -3382,10 +3382,10 @@ nv.models.scatter = function() {
         pointBorderColor: {get: function(){return pointBorderColor;}, set: function(_){pointBorderColor=_;}},
 
         // simple functor options
-        x:     {get: function(){return getX;}, set: function(_){getX = d3.functor(_);}},
-        y:     {get: function(){return getY;}, set: function(_){getY = d3.functor(_);}},
-        pointSize: {get: function(){return getSize;}, set: function(_){getSize = d3.functor(_);}},
-        pointShape: {get: function(){return getShape;}, set: function(_){getShape = d3.functor(_);}},
+        x:     {get: function(){return getX;}, set: function(_){getX = (function(x) { return function() { return x; } ; })(_);}},
+        y:     {get: function(){return getY;}, set: function(_){getY = (function(x) { return function() { return x; } ; })(_);}},
+        pointSize: {get: function(){return getSize;}, set: function(_){getSize = (function(x) { return function() { return x; } ; })(_);}},
+        pointShape: {get: function(){return getShape;}, set: function(_){getShape = (function(x) { return function() { return x; } ; })(_);}},
 
         // options that require extra logic in the setter
         margin: {get: function(){return margin;}, set: function(_){
@@ -3693,8 +3693,8 @@ nv.models.stackedArea = function() {
         interpolate:    {get: function(){return interpolate;}, set: function(_){interpolate=_;}},
 
         // simple functor options
-        x:     {get: function(){return getX;}, set: function(_){getX = d3.functor(_);}},
-        y:     {get: function(){return getY;}, set: function(_){getY = d3.functor(_);}},
+        x:     {get: function(){return getX;}, set: function(_){getX = (function(x) { return function() { return x; } ; })(_);}},
+        y:     {get: function(){return getY;}, set: function(_){getY = (function(x) { return function() { return x; } ; })(_);}},
 
         // options that require extra logic in the setter
         margin: {get: function(){return margin;}, set: function(_){

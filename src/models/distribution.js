@@ -131,7 +131,7 @@ nv.models.distribution = function() {
 
     chart.getData = function(_) {
         if (!arguments.length) return getData;
-        getData = d3.functor(_);
+        getData = (function(x) { return function() { return x; } ; })(_);
         return chart;
     };
 
