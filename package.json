@@ -47,5 +47,5 @@
     "karma-sinon-chai": "^0.2.0",
     "karma-spec-reporter": "0.0.13",
     "mocha": "^1.21.4"
-  },
+  }
 }
