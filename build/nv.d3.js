@@ -193,7 +193,7 @@ nv.interactiveGuideline = function() {
     var margin = { left: 0, top: 0 } //Pass the chart's top and left magins. Used to calculate the mouseX/Y.
         ,   width = null
         ,   height = null
-        ,   xScale = d3.scale.linear()
+        ,   xScale = d3.scaleLinear()
         ,   dispatch = d3.dispatch('elementMousemove', 'elementMouseout', 'elementClick', 'elementDblclick', 'elementMouseDown', 'elementMouseUp')
         ,   showGuideLine = true
         ,   svgContainer = null // Must pass the chart's svg, we'll use its mousemove event.
@@ -624,7 +624,7 @@ nv.models.tooltip = function() {
 
         trowEnter.selectAll("td").each(function(p) {
             if (p.highlight) {
-                var opacityScale = d3.scale.linear().domain([0,1]).range(["#fff",p.color]);
+                var opacityScale = d3.scaleLinear().domain([0,1]).range(["#fff",p.color]);
                 var opacity = 0.6;
                 d3.select(this)
                     .style("border-bottom-color", opacityScale(opacity))
@@ -967,7 +967,7 @@ nv.utils.getColor = function(color) {
 
     //if passed an array, turn it into a color scale
     } else if(nv.utils.isArray(color)) {
-        var color_scale = d3.scale.ordinal().range(color);
+        var color_scale = d3.scaleOrdinal().range(color);
         return function(d, i) {
             var key = i === undefined ? d : i;
             return d.color || color_scale(key);
@@ -1619,7 +1619,7 @@ nv.models.axis = function() {
     //------------------------------------------------------------
 
     var axis = d3.svg.axis();
-    var scale = d3.scale.linear();
+    var scale = d3.scaleLinear();
 
     var margin = {top: 0, right: 0, bottom: 0, left: 0}
         , width = 75 //only used for tickLabel currently
@@ -2708,9 +2708,9 @@ nv.models.scatter = function() {
         , pointBorderColor = null
         , id           = Math.floor(Math.random() * 100000) //Create semi-unique ID incase user doesn't select one
         , container    = null
-        , x            = d3.scale.linear()
-        , y            = d3.scale.linear()
-        , z            = d3.scale.linear() //linear because d3.svg.shape.size is treated as area
+        , x            = d3.scaleLinear()
+        , y            = d3.scaleLinear()
+        , z            = d3.scaleLinear() //linear because d3.svg.shape.size is treated as area
         , getX         = function(d) { return d.x } // accessor to get the x value
         , getY         = function(d) { return d.y } // accessor to get the y value
         , getSize      = function(d) { return d.size || 1} // accessor to get the point size
