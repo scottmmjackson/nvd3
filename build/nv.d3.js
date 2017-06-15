@@ -1390,12 +1390,18 @@ d3.rebind makes calling the function on target actually call it on source
 Also use _d3options so we can track what we inherit for documentation and chained inheritance
 */
 nv.utils.inheritOptionsD3 = function(target, d3_source, oplist) {
+    var i;
     target._d3options = oplist.concat(target._d3options || []);
     // Find unique d3 options (string) and update d3options
     target._d3options = (target._d3options || []).filter(function(item, i, ar){ return ar.indexOf(item) === i; });
-    oplist.unshift(d3_source);
-    oplist.unshift(target);
-    d3.rebind.apply(this, oplist);
+    for(i = 0; i < oplist.length; ++i) {
+        target[oplist[i]] = (function(target, source, method) {
+            return function() {
+                var value = method.apply(source, arguments);
+                return value === source ? target : value;
+            }
+        })(target, d3_source, oplist[i]);
+    }
 };
 
 
@@ -1453,15 +1459,21 @@ Also track via _inherited and _d3options so we can track what we inherit
 for documentation generation purposes and chained inheritance
 */
 nv.utils.inheritOptions = function(target, source) {
+    var i;
     // inherit all the things
     var ops = Object.getOwnPropertyNames(source._options || {});
     var calls = Object.getOwnPropertyNames(source._calls || {});
     var inherited = source._inherited || [];
     var d3ops = source._d3options || [];
     var args = ops.concat(calls).concat(inherited).concat(d3ops);
-    args.unshift(source);
-    args.unshift(target);
-    d3.rebind.apply(this, args);
+    for(i = 0; i < args.length; ++i) {
+        target[args[i]] = (function(target, source, method) {
+            return function() {
+                var value = method.apply(source, arguments);
+                return value === source ? target : value;
+            }
+        })(target, source, args[i]);
+    }
     // pass along the lists to keep track of them, don't allow duplicates
     target._inherited = nv.utils.arrayUnique(ops.concat(calls).concat(inherited).concat(ops).concat(target._inherited || []));
     target._d3options = nv.utils.arrayUnique(d3ops.concat(target._d3options || []));
