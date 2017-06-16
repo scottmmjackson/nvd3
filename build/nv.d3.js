@@ -2043,6 +2043,7 @@ nv.models.focus = function(content) {
         , x
         , y
         , duration = 250
+        , dispatch = d3.dispatch('renderEnd')
         ;
 
     content.interactive(false);
