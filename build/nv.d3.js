@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.5-dev (https://github.com/novus/nvd3) 2017-06-15 */
+/* nvd3 version 1.8.5-dev (https://github.com/novus/nvd3) 2017-06-16 */
 (function(){
 
 // set up main nv object
@@ -1630,7 +1630,7 @@ nv.models.axis = function() {
     // Public Variables with Default Settings
     //------------------------------------------------------------
 
-    var axis = d3.svg.axis();
+    var axis = d3.axisBottom().tickFormat(function(d) { return d });
     var scale = d3.scaleLinear();
 
     var margin = {top: 0, right: 0, bottom: 0, left: 0}
@@ -1649,11 +1649,6 @@ nv.models.axis = function() {
         , dispatch = d3.dispatch('renderEnd')
         , tickFormatMaxMin
         ;
-    axis
-        .scale(scale)
-        .orient('bottom')
-        .tickFormat(function(d) { return d })
-    ;
 
     //============================================================
     // Private Variables
