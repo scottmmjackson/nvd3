@@ -7,8 +7,12 @@ nv.models.stackedAreaChart = function() {
     //------------------------------------------------------------
 
     var stacked = nv.models.stackedArea()
-        , xAxis = nv.models.axis()
-        , yAxis = nv.models.axis()
+        , xAxis = d3.axisBottom()
+        .tickFormat(function(d) { return d })
+        .tickPadding(7)
+        , yAxis = (rightAlignYAxis ?
+      d3.axisRight() :
+      d3.axisLeft()).tickFormat(function(d) { return d })
         , legend = nv.models.legend()
         , controls = nv.models.legend()
         , interactiveLayer = nv.interactiveGuideline()
@@ -44,8 +48,6 @@ nv.models.stackedAreaChart = function() {
         ;
 
     state.style = stacked.style();
-    xAxis.orient('bottom').tickPadding(7);
-    yAxis.orient((rightAlignYAxis) ? 'right' : 'left');
 
     tooltip
         .headerFormatter(function(d, i) {
