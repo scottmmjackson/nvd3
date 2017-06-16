@@ -639,8 +639,6 @@ nv.models.stackedAreaChart = function() {
             duration = _;
             renderWatch.reset(duration);
             stacked.duration(duration);
-            xAxis.duration(duration);
-            yAxis.duration(duration);
         }},
         color:  {get: function(){return color;}, set: function(_){
             color = nv.utils.getColor(_);
