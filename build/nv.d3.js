@@ -1390,18 +1390,12 @@ d3.rebind makes calling the function on target actually call it on source
 Also use _d3options so we can track what we inherit for documentation and chained inheritance
 */
 nv.utils.inheritOptionsD3 = function(target, d3_source, oplist) {
-    var i;
     target._d3options = oplist.concat(target._d3options || []);
     // Find unique d3 options (string) and update d3options
     target._d3options = (target._d3options || []).filter(function(item, i, ar){ return ar.indexOf(item) === i; });
-    for(i = 0; i < oplist.length; ++i) {
-        target[oplist[i]] = (function(target, source, method) {
-            return function() {
-                var value = method.apply(source, arguments);
-                return value === source ? target : value;
-            }
-        })(target, d3_source, oplist[i]);
-    }
+    oplist.unshift(d3_source);
+    oplist.unshift(target);
+    rebind.apply(this, oplist);
 };
 
 
@@ -1459,21 +1453,15 @@ Also track via _inherited and _d3options so we can track what we inherit
 for documentation generation purposes and chained inheritance
 */
 nv.utils.inheritOptions = function(target, source) {
-    var i;
     // inherit all the things
     var ops = Object.getOwnPropertyNames(source._options || {});
     var calls = Object.getOwnPropertyNames(source._calls || {});
     var inherited = source._inherited || [];
     var d3ops = source._d3options || [];
     var args = ops.concat(calls).concat(inherited).concat(d3ops);
-    for(i = 0; i < args.length; ++i) {
-        target[args[i]] = (function(target, source, method) {
-            return function() {
-                var value = method.apply(source, arguments);
-                return value === source ? target : value;
-            }
-        })(target, source, args[i]);
-    }
+    args.unshift(source);
+    args.unshift(target);
+    rebind.apply(this, args);
     // pass along the lists to keep track of them, don't allow duplicates
     target._inherited = nv.utils.arrayUnique(ops.concat(calls).concat(inherited).concat(ops).concat(target._inherited || []));
     target._d3options = nv.utils.arrayUnique(d3ops.concat(target._d3options || []));
@@ -1623,6 +1611,23 @@ nv.utils.pointIsInArc = function(pt, ptData, d3Arc) {
       (theta1 <= angle) && (angle <= theta2);
 };
 
+
+// Copies a variable number of methods from source to target.
+function rebind(target, source) {
+  var i = 1, n = arguments.length, method;
+  while (++i < n) target[method = arguments[i]] = d3_rebind(target, source, source[method]);
+  return target;
+};
+
+// Method is assumed to be a standard D3 getter-setter:
+// If passed with no arguments, gets the value.
+// If passed with arguments, sets the value and returns the target.
+function d3_rebind(target, source, method) {
+  return function() {
+    var value = method.apply(source, arguments);
+    return value === source ? target : value;
+  };
+}
 nv.models.axis = function() {
     "use strict";
 
