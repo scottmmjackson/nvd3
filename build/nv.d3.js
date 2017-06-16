@@ -2026,7 +2026,6 @@ nv.models.focus = function(content) {
     var content = content || nv.models.line()
         , xAxis = nv.models.axis()
         , yAxis = nv.models.axis()
-        , brush = d3.svg.brush()
         ;
 
     var margin = {top: 10, right: 0, bottom: 30, left: 0}
@@ -2036,13 +2035,9 @@ nv.models.focus = function(content) {
         , showXAxis = true
         , showYAxis = false
         , rightAlignYAxis = false
-        , ticks = null
         , x
         , y
-        , brushExtent = null
         , duration = 250
-        , dispatch = d3.dispatch('brush', 'onBrush', 'renderEnd')
-        , syncBrushing = true
         ;
 
     content.interactive(false);
@@ -2090,8 +2085,6 @@ nv.models.focus = function(content) {
             gEnter.append('g').attr('class', 'nv-x nv-axis');
             gEnter.append('g').attr('class', 'nv-y nv-axis');
             gEnter.append('g').attr('class', 'nv-contentWrap');
-            gEnter.append('g').attr('class', 'nv-brushBackground');
-            gEnter.append('g').attr('class', 'nv-x nv-brush');
 
             if (rightAlignYAxis) {
                 g.select(".nv-y.nv-axis")
@@ -2113,47 +2106,6 @@ nv.models.focus = function(content) {
                 .datum(data.filter(function(d) { return !d.disabled; }));
 
             d3.transition(contentWrap).call(content);
-            
-            // Setup Brush
-            brush
-                .x(x)
-                .on('brush', function() {
-                    onBrush(syncBrushing);
-                });
-
-            brush.on('brushend', function () {
-                if (!syncBrushing) {
-                    dispatch.onBrush(brush.empty() ? x.domain() : brush.extent());
-                }
-            });
-
-            if (brushExtent) brush.extent(brushExtent);
-
-            var brushBG = g.select('.nv-brushBackground').selectAll('g')
-                .data([brushExtent || brush.extent()]);
-    
-            var brushBGenter = brushBG.enter()
-                .append('g');
-
-            brushBGenter.append('rect')
-                .attr('class', 'left')
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr('height', availableHeight);
-
-            brushBGenter.append('rect')
-                .attr('class', 'right')
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr('height', availableHeight);
-
-            var gBrush = g.select('.nv-x.nv-brush')
-                .call(brush);
-            gBrush.selectAll('rect')
-                .attr('height', availableHeight);
-            gBrush.selectAll('.resize').append('path').attr('d', resizePath);
-
-            onBrush(true);
 
             g.select('.nv-background rect')
                 .attr('width', availableWidth)
@@ -2206,34 +2158,7 @@ nv.models.focus = function(content) {
                     + 'M' + (4.5 * x) + ',' + (y + 8)
                     + 'V' + (2 * y - 8);
             }
-    
-    
-            function updateBrushBG() {
-                if (!brush.empty()) brush.extent(brushExtent);
-                brushBG
-                    .data([brush.empty() ? x.domain() : brushExtent])
-                    .each(function(d,i) {
-                        var leftWidth = x(d[0]) - x.range()[0],
-                            rightWidth = availableWidth - x(d[1]);
-                        d3.select(this).select('.left')
-                            .attr('width',  leftWidth < 0 ? 0 : leftWidth);
-    
-                        d3.select(this).select('.right')
-                            .attr('x', x(d[1]))
-                            .attr('width', rightWidth < 0 ? 0 : rightWidth);
-                    });
-            }
 
-
-            function onBrush(shouldDispatch) {
-                brushExtent = brush.empty() ? null : brush.extent();
-                var extent = brush.empty() ? x.domain() : brush.extent();
-                dispatch.brush({extent: extent, brush: brush});
-                updateBrushBG();
-                if (shouldDispatch) {
-                    dispatch.onBrush(extent);
-                }
-            }
         });
 
         renderWatch.renderEnd('focus immediate');
@@ -2252,7 +2177,6 @@ nv.models.focus = function(content) {
     // expose chart's sub-components
     chart.dispatch = dispatch;
     chart.content = content;
-    chart.brush = brush;
     chart.xAxis = xAxis;
     chart.yAxis = yAxis;
     chart.options = nv.utils.optionsFunc.bind(chart);
@@ -2263,8 +2187,6 @@ nv.models.focus = function(content) {
         height:     {get: function(){return height;}, set: function(_){height=_;}},
         showXAxis:      {get: function(){return showXAxis;}, set: function(_){showXAxis=_;}},
         showYAxis:    {get: function(){return showYAxis;}, set: function(_){showYAxis=_;}},
-        brushExtent: {get: function(){return brushExtent;}, set: function(_){brushExtent=_;}},
-        syncBrushing: {get: function(){return syncBrushing;}, set: function(_){syncBrushing=_;}},
 
         // options that require extra logic in the setter
         margin: {get: function(){return margin;}, set: function(_){
