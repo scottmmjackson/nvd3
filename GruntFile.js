@@ -48,7 +48,6 @@ module.exports = function(grunt) {
                     '!src/models/furious*',
                     '!src/models/historical*',
                     '!src/models/line*',
-                    '!src/models/multi*',
                     '!src/models/ohlc*',
                     '!src/models/parallel*',
                     '!src/models/pie*',
