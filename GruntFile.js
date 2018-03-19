@@ -36,8 +36,25 @@ module.exports = function(grunt) {
                     'src/tooltip.js',
                     'src/utils.js',
                     //Include all files in src/models
-                    'src/models/*.js'
+                    'src/models/*.js',
                     // example to exclude files: '!src/models/excludeMe*'
+                    '!src/models/boxPlot*',
+                    '!src/models/bullet*',
+                    '!src/models/candlestick*',
+                    '!src/models/cumulative*',
+                    '!src/models/discrete*',
+                    '!src/models/distribution*',
+                    '!src/models/force*',
+                    '!src/models/furious*',
+                    '!src/models/historical*',
+                    '!src/models/line*',
+                    '!src/models/ohlc*',
+                    '!src/models/parallel*',
+                    '!src/models/pie*',
+                    '!src/models/sankey*',
+                    '!src/models/scatterChart.js',
+                    '!src/models/sparkline*',
+                    '!src/models/sunburst*',
                 ],
                 dest: 'build/nv.d3.js'
             }
